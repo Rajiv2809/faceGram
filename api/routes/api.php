@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FollowController;
+use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,9 +29,17 @@ Route::prefix('/v1')->group(function () {
         Route::post('/login', [AuthController::class, 'login']);
         Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     });
-    Route::middleware(['auth:sanctum'])->prefix('/v1')->group(function () {
-        
-    });
+    
+});
+
+Route::prefix('/v1')->middleware('auth:sanctum')->group(function () {
+    //posts
+    Route::post('/posts', [PostController::class, 'store']); 
+    Route::delete('/posts/{id}', [PostController::class, 'remove']);
+    Route::get('/posts', [PostController::class, 'show']);
+    //follow
+    Route::post('/users/{username}/follow', [FollowController::class, 'followUser']);
+
 
 
 });

@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -45,4 +47,20 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
     public $timestamps = false;
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+    public function followers() : BelongsToMany
+    {
+        return $this->belongsToMany(Follow::class, 'follow', 'folower_id', 'folowing_id');
+    }
+    public function following(): BelongsToMany
+    {
+        return $this->belongsToMany(Follow::class, 'follow', 'following_id', 'folowers_id');
+    }
+
+
+
 }

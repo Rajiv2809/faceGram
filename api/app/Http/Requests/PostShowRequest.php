@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class registerRequest extends FormRequest
+class PostShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,14 +24,10 @@ class registerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'full_name' => 'required',
-            'username'=> 'required|unique:users,username',
-            'bio' => 'required',
-            'is_private' => 'required',
-            'password' => 'required|min:6 ',
+            'page' => 'integer|min:0',
+            'size' => 'integer|min:1',
         ];
     }
-
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
