@@ -24,6 +24,6 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
     public function post_attachment() : HasMany{
-        return  $this -> hasMany(Post_attachment::class);
+        return  $this ->hasMany(Post_attachment::class);
     }
 }

@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
+use App\Models\Follow;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,9 +39,14 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(function () {
     Route::post('/posts', [PostController::class, 'store']); 
     Route::delete('/posts/{id}', [PostController::class, 'remove']);
     Route::get('/posts', [PostController::class, 'show']);
-    //follow
+    //following
     Route::post('/users/{username}/follow', [FollowController::class, 'followUser']);
-
-
-
+    Route::delete('/users/{username}/unfollow', [FollowController::class, 'unfollow']);
+    Route::get('/users/{username}/following', [FollowController::class, 'allFollowing']);
+    //follower
+    Route::put('/users/{username}/accept', [FollowController::class, 'follback']);
+    Route::get('/users/{username}/followers', [FollowController::class, 'allFollowers']);
+    //get users
+    Route::get('/users', [UserController::class, 'allUser']);
+    Route::get('/users/{username}', [UserController::class , 'getUser']);
 });
