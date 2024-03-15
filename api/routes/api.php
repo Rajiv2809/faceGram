@@ -49,4 +49,5 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(function () {
     //get users
     Route::get('/users', [UserController::class, 'allUser']);
     Route::get('/users/{username}', [UserController::class , 'getUser']);
+    Route::get('/me', [UserController::class, 'me']);
 });

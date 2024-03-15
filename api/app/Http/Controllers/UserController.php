@@ -75,5 +75,11 @@ class UserController extends Controller
     
         return response()->json($user,200);
     }
+    public function me(){
+        $user = User::find(Auth::id());
+        return response()->json([
+            $user
+        ]);
+    }
 }
 

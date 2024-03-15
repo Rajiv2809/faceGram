@@ -1,26 +1,25 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Facegram</title>
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+import React, { useEffect } from "react";
+import { useStateContext } from "../Contexts/Context";
+import axiosClient from "../Axios";
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
-    <div class="container">
-        <a class="navbar-brand" href="homepage.html">Facegram</a>
-        <div class="navbar-nav">
-            <a class="nav-link" href="my-profile.html">@tomsgat</a>
-            <a class="nav-link" href="index.html">Logout</a>
+export default function Home() {
+    const {currentUser, setCurrentUser} = useStateContext();
+  return (
+    <>
+      <nav className="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+        <div className="container">
+          <a className="navbar-brand" href="homepage.html">
+            Facegram
+          </a>
+          <div className="navbar-nav">
+            <a className="nav-link" href="my-profile.html">
+              {}
+            </a>
+            <a className="nav-link">Logout</a>
+          </div>
         </div>
-    </div>
-</nav>  
-
+      </nav>
+      {/* 
 <main class="mt-5">
     <div class="container py-5">
         <div class="row justify-content-between">
@@ -205,8 +204,7 @@
             </div>
         </div>
     </div>
-</main>
-
-
-</body>
-</html>
+</main> */}
+    </>
+  );
+}
