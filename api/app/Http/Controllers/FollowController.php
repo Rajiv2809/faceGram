@@ -135,8 +135,9 @@ class FollowController extends Controller
             ], 404);
         }
         $followers = Follow::where('following_id', $user->id );
+
         return response()->json([
-            'followers' => $followers->get()
+            'followers' => $followers
         ], 200);
     }
         

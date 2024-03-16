@@ -4,6 +4,8 @@ import GuestLayout from "./Componnets/GuestLayout";
 import Login from "./Views/Login";
 import Register from "./Views/Register";
 import Home from "./Views/Home";
+import User from "./Views/User";
+import CreatePost from "./Componnets/CreatePost";
 
 const router = createBrowserRouter([
     {
@@ -13,7 +15,16 @@ const router = createBrowserRouter([
             {
                 path:'/homepage',
                 element:<Home/>
+            },
+            {
+                path:'/user/:username',
+                element: <User/>
+            },
+            {
+                path:'/create/post',
+                element: <CreatePost/>
             }
+
         ]
         
     },

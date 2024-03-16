@@ -19,7 +19,7 @@ class PostController extends Controller
             $post = Auth::user()->posts()->create(['caption' => $request->input('caption')]);
 
             foreach ($request->file('attachments') as $index => $attachment) {
-                $filename = $attachment->store('post_attachment');
+                $filename = $attachment->store('posts');
                 $post->post_attachment()->create(['storage_path' => $filename, ]);
             }
     

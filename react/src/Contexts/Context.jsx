@@ -9,6 +9,11 @@ const StateContext = createContext({
         message: '',
         show: false,
     },
+    posts: [],
+    post_attachments : [],
+    
+    setPost_attachments: () => [],
+    setPosts: () => [], 
     setCurrentUser: () => {},
     setUserToken: () => {},
     setToast: () => {},
@@ -18,9 +23,11 @@ const StateContext = createContext({
 })
 
 export const ContextProvider = ({children}) => {
-    const [currentUser, setCurrentUser] = useState({})
-    const [userToken, setUserToken] =  useState(localStorage.getItem('accessToken'))
-    const [toast, setToast] = useState({  message: '', show: false,})
+    const [currentUser, setCurrentUser] = useState({});
+    const [userToken, setUserToken] =  useState(localStorage.getItem('accessToken'));
+    const [toast, setToast] = useState({ message: '', show: false,});
+    const [post_attachments, setPost_attachments] = useState([]);
+    const [posts, setPosts] = useState([]);
     const setToken = (token) => {
         if(token){
             localStorage.setItem("accessToken", token);
@@ -43,6 +50,8 @@ export const ContextProvider = ({children}) => {
             currentUser,
             userToken,
             toast,
+            posts,
+            setPosts,
             setCurrentUser,
             setToken,
             showToast,

@@ -71,8 +71,8 @@ export default function Register() {
                                     type="checkbox" 
                                     id="is_private" 
                                     name="is_private" 
-                                    checked={is_private}  // Set checked attribute based on state
-                                    onChange={e => setIs_private(e.target.checked)}  // Handle changes to the state
+                                    checked={is_private}  
+                                    onChange={e => setIs_private(e.target.checked)}  
                                 />
                                 <label htmlFor="is_private">Private Account</label>
                             </div>
