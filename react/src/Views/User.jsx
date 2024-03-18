@@ -4,7 +4,7 @@ import axiosClient from '../Axios';
 import { useParams } from 'react-router-dom';
 
 export default function User() {
-    const { currentUser, } = useStateContext();
+    const { currentUser, showToast } = useStateContext();
     const [user , setUser] = useState({});
     const [posts, setPosts] = useState([])
     const {username} = useParams(); 
@@ -20,6 +20,24 @@ export default function User() {
         })
     },[])
 
+    const followHandler = (e) => {
+        e.preventDefault();
+        axiosClient.post(`/users/${user.username}/follow`).then(({data}) => {
+            showToast(data.message)
+            window.location.reload()
+        }).catch((err) => {
+            showToast(err.response.data.message)
+        }) 
+    }
+    const UnfollowHandler = (e) => {
+        e.preventDefault();
+        axiosClient.delete(`/users/${user.username}/unfollow`).then(({data}) => {
+            window.location.reload()
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
   return (
     
 <main class="mt-5">
@@ -31,13 +49,22 @@ export default function User() {
                     <span>@{user.username}</span>
                 </div>
                 <small class="mb-0 text-muted">
-                   {user.bio}   
+                    {user.bio}   
                 </small>
             </div>
             <div>
-                <a href="/create/post" class="btn btn-primary w-100 mb-2">
-                    {user.is_your_account && ('Create post')}
-                </a>
+            {user.is_your_account ? (
+                    <a href="/create/post" className="btn btn-primary w-100 mb-2">
+                        Create post
+                    </a>
+                ) : user.following_status === 'requested' ? (
+                    <a href="" onClick={UnfollowHandler}  class="btn btn-secondary w-100 mb-2">Requested</a>
+                ) : user.following_status === "not-following" ? (
+                    <a href="" onClick={followHandler}  className="btn btn-primary w-100 mb-2">Follow</a>
+                ) : user.following_status === 'following' ? (
+                    <a href="" onClick={UnfollowHandler} class="btn btn-secondary w-100 mb-2" >Unfollow</a>
+                ) : null}
+
                 <div class="d-flex gap-3">
                     <div>
                         <div class="profile-label"><b>{user.posts_count}</b> posts</div>
@@ -100,21 +127,38 @@ export default function User() {
             </div>
         </div>
         <div class="row justify-content-center">
-            {!loading && posts.length && posts.map(p => (
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="card-images mb-2">
-                            {p.post_attachment.map(img => (
-                                <img  src={`http://127.0.0.1:8000/storage/${img.storage_path}`} alt="image" class="w-100"/>
-                            ))}
-                           
+        {!loading && (
+            user.is_private ? (
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+                        <div class="card py-4">
+                            <div class="card-body text-center">
+                                &#128274; This account is private
+                            </div>
                         </div>
-                        <p class="mb-0 text-muted">{p.caption}</p>
                     </div>
                 </div>
-            </div>
-            ))}
+            ) : (
+                posts.length > 0 ? (
+                    posts.map(p => (
+                        <div class="col-md-4" key={p.id}>
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="card-images mb-2">
+                                        {p.post_attachment.map((img, index) => (
+                                            <img src={`http://127.0.0.1:8000/storage/${img.storage_path}`} alt={`image-${index}`} class="w-100" key={index} />
+                                        ))}
+                                    </div>
+                                    <p class="mb-0 text-muted">{p.caption}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                ) : null
+            )
+        )}
+
+
 
         </div>
     </div>

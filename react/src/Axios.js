@@ -18,5 +18,17 @@ axiosClient.interceptors.request.use(
    
 );
 
+axiosClient.interceptors.response.use(
+    response => {
+        return response;
+    },
+    error => {
+        if(error.response.status === 401){
+            localStorage.removeItem('accessToken')
+        }
+        return  error
+    }
+)
+
 export default axiosClient;
 

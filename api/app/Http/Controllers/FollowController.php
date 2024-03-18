@@ -134,8 +134,8 @@ class FollowController extends Controller
                 'message' => 'User not found'
             ], 404);
         }
-        $followers = Follow::where('following_id', $user->id );
-
+        $followers = Follow::where('following_id', $user->id )->get();
+        
         return response()->json([
             'followers' => $followers
         ], 200);

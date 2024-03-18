@@ -13,21 +13,27 @@ use App\Traits\ResponseHttpStatus as TraitsResponseHttpStatus;
 
 class PostController extends Controller
 {
-   
-    public function  store(PostRequest $request){
+
+    public function store(PostRequest $request){
         if ($request->hasFile('attachments')) {
             $post = Auth::user()->posts()->create(['caption' => $request->input('caption')]);
-
+            
+            $paths = []; // Array to collect file paths
+            
             foreach ($request->file('attachments') as $index => $attachment) {
                 $filename = $attachment->store('posts');
-                $post->post_attachment()->create(['storage_path' => $filename, ]);
+                $postAttachment = $post->post_attachment()->create(['storage_path' => $filename]);
+                
+                // Collect the path
+                $paths[] = $postAttachment->storage_path;
             }
-    
-            return response()->json(['message' => 'Create post success'], 201);
+            
+            return response()->json(['message' => 'Create post success', 'paths' => $paths], 201);
         }
-    
+        
         return response()->json(['message' => 'No attachments provided'], 400);
     }
+    
     public function remove($id){
         $post = Post::find($id);
 

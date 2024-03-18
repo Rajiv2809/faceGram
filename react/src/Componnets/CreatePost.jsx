@@ -4,31 +4,42 @@ import axiosClient from './../Axios';
 
 export default function CreatePost() {
     const [caption, setCaption] = useState('');
-    const [images, setImages] = useState([]);
+    const [attachments, setAttachments] = useState([]);
     const { showToast } = useStateContext();
-
-    const handleImageChange = (e) => {
-        const files = Array.from(e.target.files);
-        setImages(files);
-    };
-
+    
     const onSubmit = (e) => {
         e.preventDefault();
+    
+        if (!attachments || attachments.length === 0) {
+            showToast("No attachments provided");
+            return;
+        }
+    
         const formData = new FormData();
         formData.append('caption', caption);
-        images.forEach((image, index) => {
-            formData.append(`image${index + 1}`, image);
-        });
-        axiosClient.post('/posts', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        }).then(({ data }) => {
-            showToast(data.message);
-        }).catch((err) => {
-            console.log(err);
-        });
+        for (let i = 0; i < attachments.length; i++) {
+            formData.append('attachments', attachments[i]);
+        }
+    
+        console.log("FormData:", formData); // Log FormData object before sending
+    
+        axiosClient.post('/posts', formData)
+            .then(({ data }) => {
+                showToast(data.message);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
+    
+
+    const handleFileChange = (e) => {
+        const fileList = e.target.files;
+        const fileArray = Array.from(fileList);
+        setAttachments(fileArray);
+    };
+
+    console.log("Attachments:", attachments); // Check attachments state
 
     return (
         <div>
@@ -49,7 +60,7 @@ export default function CreatePost() {
 
                                         <div className="mb-3">
                                             <label htmlFor="attachments">Image(s)</label>
-                                            <input type="file" onChange={handleImageChange} className="form-control" id="attachments" name="attachments" multiple />
+                                            <input type="file" onChange={handleFileChange} className="form-control" id="attachments" name="attachments" multiple />
                                         </div>
 
                                         <button type="submit" className="btn btn-primary w-100">

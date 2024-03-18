@@ -14,7 +14,7 @@ export default function Posts() {
             console.log(err);
             setLoading(false); 
         })
-    }, [setPosts]); 
+    }, [    ]); 
 
     const daysAgo = (dateString) => {
         const postDate = new Date(dateString);
