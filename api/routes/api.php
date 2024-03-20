@@ -46,6 +46,7 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(function () {
     //follower
     Route::put('/users/{username}/accept', [FollowController::class, 'follback']);
     Route::get('/users/{username}/followers', [FollowController::class, 'allFollowers']);
+    Route::get('/requestfollower',[FollowController::class, 'allRequests']);
     //get users
     Route::get('/users', [UserController::class, 'allUser']);
     Route::get('/users/{username}', [UserController::class , 'getUser']);

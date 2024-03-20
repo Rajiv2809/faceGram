@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import DefaultLayout from "./Componnets/DefaultLayout";
 import GuestLayout from "./Componnets/GuestLayout";
 import Login from "./Views/Login";
@@ -12,6 +12,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <DefaultLayout/>,
         children: [
+            {
+                path: '/',
+                element: <Navigate to="/homepage" />
+            },
             {
                 path:'/homepage',
                 element:<Home/>

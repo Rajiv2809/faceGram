@@ -11,27 +11,22 @@ class FollowController extends Controller
 {
     public function followUser($username){
         $userToFollow = User::where('username', $username)->first();
-
         
         if (!$userToFollow) {
             return response()->json([
                 'message' => 'User not found'
             ], 404);
         }
-
-    
         if ($userToFollow->id == Auth::id()) {
             return response()->json([
                 'message' => 'You are not allowed to follow yourself'
             ], 422);
         }
-
         
         $existingFollow = Follow::where([
             'follower_id' => Auth::id(),
             'following_id' => $userToFollow->id,
         ])->first();
-
         if ($existingFollow) {
             $status = $existingFollow->is_accepted ? 'following' : 'requested';
             return response()->json([
@@ -39,8 +34,6 @@ class FollowController extends Controller
                 'status' => $status
             ], 422);
         }
-
-    
         $status = 'requested';
         $follow = new Follow([
             'follower_id' => Auth::id(),
@@ -75,18 +68,23 @@ class FollowController extends Controller
         
         return response()->json(null, 204);
     }
-    public function allFollowing($username){
+    public function allFollowing($username) {
         $user = User::where('username', $username)->first();
-        if(!$user){
+    
+        if (!$user) {
             return response()->json([
                 'message' => 'User not found'
             ], 404);
         }
-        $following = Follow::where('follower_id', $user->id );
-        return response()->json([
-            'following' => $following->get()
-        ], 200);
 
+        $following = Follow::where('follower_id', $user->id)->pluck('following_id');
+        
+    
+        $allFollowing = User::whereIn('id', $following)->get();
+    
+        return response()->json([
+            'following' => $allFollowing
+        ], 200);
     }
     public function follback($username){
             $user = User::where('username', $username)->first();
@@ -127,20 +125,52 @@ class FollowController extends Controller
 
 
     }
-    public function allFollowers($username){
+    public function allFollowers($username) {
         $user = User::where('username', $username)->first();
-        if(!$user){
+    
+        if(!$user) {
             return response()->json([
                 'message' => 'User not found'
             ], 404);
         }
-        $followers = Follow::where('following_id', $user->id )->get();
+    
+        $followers = Follow::where('following_id', $user->id)->pluck('follower_id');
+        $isAccepted = Follow::where('following_id', $user->id)->pluck('is_accepted');
         
+        $allFollowers = User::whereIn('id', $followers)->get();
+        $allFollowers->is_accepted = $isAccepted;
+    
         return response()->json([
-            'followers' => $followers
+            'followers' => $allFollowers
         ], 200);
     }
+
+    public function allRequests()
+    {
+        $user = Auth::user();
         
+        $requests = Follow::where('following_id', $user->id)->get();
+        
+        $requestsData = [];
+        foreach ($requests as $request) {
+            $followerId = $request->follower_id;
+            $followerUsername = User::where('id', $followerId)->value('username');
+            $requestInfo = [
+                'id' => $request->id,
+                'follower_id' => $request->follower_id,
+                'following_id' => $request->following_id,
+                'username' => $followerUsername, 
+                'is_accepted' => $request->is_accepted,
+                'created_at' => $request->created_at,
+            ];
+            $requestsData[] = $requestInfo;
+        }
+        
+        return response()->json([
+            'followers' => $requestsData
+        ], 200);
+    }
+    
 
 
-}
+}   

@@ -6,7 +6,9 @@ import { useParams } from 'react-router-dom';
 export default function User() {
     const { currentUser, showToast } = useStateContext();
     const [user , setUser] = useState({});
-    const [posts, setPosts] = useState([])
+    const [posts, setPosts] = useState([]);
+    const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([])
     const {username} = useParams(); 
     const [loading, setLoading] = useState(true)
     useEffect(() => {
@@ -18,6 +20,19 @@ export default function User() {
         }).catch((err) => {
             console.log('Error:', err);
         })
+
+        axiosClient.get(`/users/${username}/followers`).then(({data}) => {
+            setFollowers(data.followers.slice(0, 6))  
+        }).catch((err) => {
+            console.log(err)
+        })
+
+        axiosClient.get(`/users/${username}/following`).then(({data}) => {
+            setFollowing(data.following.slice(0,6))
+        }).catch((err) => {
+            console.log(err)
+        }) 
+
     },[])
 
     const followHandler = (e) => {
@@ -37,6 +52,8 @@ export default function User() {
             console.log(err)
         })
     }
+
+
 
   return (
     
@@ -74,24 +91,12 @@ export default function User() {
                         <div class="profile-list">
                             <div class="card">
                                 <div class="card-body"> 
+                                {!loading && followers.length > 0 && followers.map(user => (
                                     <div class="profile-user">
-                                        <a href="user-profile-private.html">@davidnaista</a>
+                                        <a href="user-profile-private.html">{user.username}</a>
                                     </div>
-                                    <div class="profile-user">
-                                        <a href="user-profile-private.html">@superipey</a>
-                                    </div>
-                                    <div class="profile-user">
-                                        <a href="user-profile-private.html">@lukicenturi</a>
-                                    </div>
-                                    <div class="profile-user">
-                                        <a href="user-profile-private.html">@_erik3010</a>
-                                    </div>
-                                    <div class="profile-user">
-                                        <a href="user-profile-private.html">@asawgi</a>
-                                    </div>
-                                    <div class="profile-user">
-                                        <a href="user-profile-private.html">@irfnmaulaa</a>
-                                    </div>
+                                )
+                                )}
                                 </div>
                             </div>
                         </div>
@@ -101,24 +106,13 @@ export default function User() {
                         <div class="profile-list">
                             <div class="card">
                                 <div class="card-body">
+                                {!loading && following.length > 0 && following.map(user => (
                                     <div class="profile-user">
-                                        <a href="user-profile-private.html">@davidnaista</a>
+                                        <a href="user-profile-private.html">{user.username}</a>
                                     </div>
-                                    <div class="profile-user">
-                                        <a href="user-profile-private.html">@superipey</a>
-                                    </div>
-                                    <div class="profile-user">
-                                        <a href="user-profile-private.html">@lukicenturi</a>
-                                    </div>
-                                    <div class="profile-user">
-                                        <a href="user-profile-private.html">@_erik3010</a>
-                                    </div>
-                                    <div class="profile-user">
-                                        <a href="user-profile-private.html">@asawgi</a>
-                                    </div>
-                                    <div class="profile-user">
-                                        <a href="user-profile-private.html">@irfnmaulaa</a>
-                                    </div>
+                                )
+                                )}
+                                    
                                 </div>
                             </div>
                         </div>
@@ -133,7 +127,7 @@ export default function User() {
                     <div class="col-md-12">
                         <div class="card py-4">
                             <div class="card-body text-center">
-                                &#128274; This account is private
+                                &#12 8274; This account is private
                             </div>
                         </div>
                     </div>

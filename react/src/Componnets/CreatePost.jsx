@@ -6,40 +6,29 @@ export default function CreatePost() {
     const [caption, setCaption] = useState('');
     const [attachments, setAttachments] = useState([]);
     const { showToast } = useStateContext();
-    
-    const onSubmit = (e) => {
+
+    const onSubmit = async (e) => {
         e.preventDefault();
-    
-        if (!attachments || attachments.length === 0) {
-            showToast("No attachments provided");
-            return;
-        }
-    
+
         const formData = new FormData();
         formData.append('caption', caption);
         for (let i = 0; i < attachments.length; i++) {
-            formData.append('attachments', attachments[i]);
+            formData.append('attachments[]', attachments[i]);
         }
-    
-        console.log("FormData:", formData); // Log FormData object before sending
-    
-        axiosClient.post('/posts', formData)
-            .then(({ data }) => {
-                showToast(data.message);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+
+        try {
+            await axiosClient.post('/posts', formData);
+            showToast('Data berhasil ditambahkan');
+        } catch (error) {
+            console.error(error);
+            showToast(error.response.data.message || 'Failed to create post');
+        }
     };
-    
 
     const handleFileChange = (e) => {
-        const fileList = e.target.files;
-        const fileArray = Array.from(fileList);
-        setAttachments(fileArray);
+        // Extract files from event and set them in state
+        setAttachments(Array.from(e.target.files));
     };
-
-    console.log("Attachments:", attachments); // Check attachments state
 
     return (
         <div>
@@ -60,7 +49,7 @@ export default function CreatePost() {
 
                                         <div className="mb-3">
                                             <label htmlFor="attachments">Image(s)</label>
-                                            <input type="file" onChange={handleFileChange} className="form-control" id="attachments" name="attachments" multiple />
+                                            <input type="file" required onChange={handleFileChange} className="form-control" id="attachments" name="attachments" multiple />
                                         </div>
 
                                         <button type="submit" className="btn btn-primary w-100">
@@ -73,7 +62,6 @@ export default function CreatePost() {
                     </div>
                 </div>
             </main>
-
         </div>
     );
 }
