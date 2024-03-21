@@ -19,19 +19,17 @@ class PostController extends Controller
     {
         try {
             $request->validate([
-                'attachments.*' => 'required|file|mimes:jpeg,png,jpg|max:2048', // Example validation rule for image files
+                'attachments.*' => 'required|file|mimes:jpeg,png,jpg|max:2048', 
             ]);
     
             if ($request->hasFile('attachments')) {
                 $post = Auth::user()->posts()->create(['caption' => $request->input('caption')]);
     
-                $paths = []; // Array to collect file paths
+                $paths = []; 
     
                 foreach ($request->file('attachments') as $index => $attachment) {
                     $filename = $attachment->store('posts');
                     $postAttachment = $post->post_attachment()->create(['storage_path' => $filename]);
-    
-                    // Collect the path
                     $paths[] = $postAttachment->storage_path;
                 }
     

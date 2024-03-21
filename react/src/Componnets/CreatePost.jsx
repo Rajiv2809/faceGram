@@ -17,11 +17,11 @@ export default function CreatePost() {
         }
 
         try {
-            await axiosClient.post('/posts', formData);
-            showToast('Data berhasil ditambahkan');
+            axiosClient.post('/posts', formData).then(({data}));
+            showToast(data.message);
         } catch (error) {
             console.error(error);
-            showToast(error.response.data.message || 'Failed to create post');
+            showToast(error.response.data.message );
         }
     };
 

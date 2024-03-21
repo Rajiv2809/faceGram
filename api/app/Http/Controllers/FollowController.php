@@ -128,20 +128,29 @@ class FollowController extends Controller
     public function allFollowers($username) {
         $user = User::where('username', $username)->first();
     
-        if(!$user) {
+        if (!$user) {
             return response()->json([
                 'message' => 'User not found'
             ], 404);
         }
     
-        $followers = Follow::where('following_id', $user->id)->pluck('follower_id');
-        $isAccepted = Follow::where('following_id', $user->id)->pluck('is_accepted');
-        
-        $allFollowers = User::whereIn('id', $followers)->get();
-        $allFollowers->is_accepted = $isAccepted;
+        $followers = Follow::where('following_id', $user->id)->select('follower_id', 'is_accepted')->get();
+    
+        $followerData = $followers->map(function ($follower) {
+            $followerUser = User::find($follower->follower_id);
+            return [
+                'id' => $followerUser->id,
+                'full_name' => $followerUser->full_name,
+                'username' => $followerUser->username,
+                'bio' => $followerUser->bio,
+                'is_private' => $followerUser->is_private,
+                'created_at' => $followerUser->created_at,
+                'is_requested' => $follower->is_accepted
+            ];
+        });
     
         return response()->json([
-            'followers' => $allFollowers
+            'followers' => $followerData
         ], 200);
     }
 

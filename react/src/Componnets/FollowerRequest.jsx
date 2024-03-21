@@ -8,8 +8,8 @@ export default function FollowerRequest({ username }) {
     const { showToast } = useStateContext();
 
     useEffect(() => {
-        axiosClient.get(`/requestfollower`).then(({ data }) => {
-            const newRequest = data.followers.filter(user => user.is_accepted === 0)
+        axiosClient.get(`/users/${username}/followers`).then(({ data }) => {
+            const newRequest = data.followers.filter(user => user.is_requested === 0)
             setFollowerRequest(newRequest);
             setLoading(false);
         }).catch((err) => {
